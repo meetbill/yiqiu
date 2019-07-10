@@ -82,10 +82,10 @@ ps: 讨论下
 
 ## 3 项目组件
 
-> * 需要有个组件进行部署 Pine agent
-> * [Pine agent](https://github.com/meetbill/butterfly) 用于管理 program,program 是服务标准化的抽象
+> * 需要有个组件进行部署 yiqiu agent
+> * [yiqiu-agent](https://github.com/meetbill/yiqiu-agent) 用于管理 program,program 是服务标准化的抽象
 >   * 因为是物理部署,所以需满足以下条件:
->     * 启动 pine agent 需要为绝对路径启动
+>     * 启动 yiqiu-agent 需要为绝对路径启动
 >     * 部署路径使用`服务_port` ,允许同一个服务启动多个实例
 
 ## 4 参加步骤
