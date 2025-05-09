@@ -38,7 +38,7 @@
 
 首先服务如果容器化的话，目前 k8s 是一个编排容器的工具，是管理应用的全生命周期的一个服务，从创建应用，应用的部署，应用提供服务，扩容缩容应用，应用更新，都非常的方便，而且可以做到故障自愈。非常强大。
 
-这里【奕秋平台】仅用于管理物理部署（如服务器全为统一系统的虚拟机）范围，如果服务容器化的话可以使用 k8s
+这里〖奕秋平台〗仅用于管理物理部署（如服务器全为统一系统的虚拟机）范围，如果服务容器化的话可以使用 k8s
 
 另外，此项目仅供学习和探索，主要是记录一些想法，非投产项目
 
@@ -105,7 +105,7 @@
 
 从整体上可以分为三层
 
-> * Cluster
+> * Group
 > * Service 组件
 > * Unit 组件中的实际实例
 
@@ -120,10 +120,16 @@
 
 而这的关联关系就是服务对下游的依赖描述
 
+![Screenshot](./images/yiqiu_relation.png)
+
+如图所示，平台管理的关联关系包括 unit 粒度和 service 粒度。
+
+> * unit 粒度: 如 service A 依赖 server B 中所有 unit 的 ip port;
+> * service 粒度：如 service A 依赖 service C 第三方服务(没有具体的 service)
+
 将此块描述放到部署包中，依托平台达到当下游实例变更时，上游配置自动更新，以达到“You build it，you run it.”的目的
 
 这里的上游自动更新会根据关联关系自动增加 / 删除变动的下游实例
-
 ```
 ps: 讨论下
 (1) 下游的实例变更时，也可以由某个中控节点自动更新上游的配置，
@@ -168,7 +174,7 @@ ps: 讨论下
 
 加强抽象，避免在不同的服务 paas 平台做重复工作，使服务 paas 层面更加专注于对服务的描述和支持。
 
-对 paas 屏蔽机器细节，便于实现【机器管理的变更】、【paas 平台之间的混部】等功能。
+对 paas 屏蔽机器细节，便于实现〖机器管理的变更〗、〖paas 平台之间的混部〗等功能。
 
 更加直接的资源管理流程。
 
@@ -237,7 +243,7 @@ resource_container: 服务下的实例
 ```
 ##### 资源分配
 
-资源分配，需要描述 container 所需的资源容量, 存储在 resource_service ，同时 resource_service 记录着与 resource_pool 关系
+资源分配，需要描述 container 所需的资源容量，存储在 resource_service ，同时 resource_service 记录着与 resource_pool 关系
 
 #### 2.3.2.3 服务平台层需要实现的功能（拓扑和配置管理）
 
@@ -298,19 +304,19 @@ PS: 各个服务平台因为镜像的格式不统一，导致的重复性工作�
 |  +---------+  +---------+  +---------+  +---------+    |
 +--------------------------------------------------------+
 ```
-如上图，unit_deploy 和 unit_command 皆为 butterfly【星桥】插件
+如上图，unit_deploy 和 unit_command 皆为 butterfly〖星桥〗插件
 
-> unit_deploy 重点是管理一个实例的部署流程, 实际命令都是 command_from_mq handler 进行执行
+> unit_deploy 重点是管理一个实例的部署流程，实际命令都是 command_from_mq handler 进行执行
 ```
 unit_deploy
     |
-    +---------------------/yiqiu/command_from_mq install(部署)
+    +---------------------/yiqiu/command_from_mq install（部署）
     |
-    +---------------------/yiqiu/command_from_mq config-changed(配置变更)
+    +---------------------/yiqiu/command_from_mq config-changed（配置变更）
     |
-    +---------------------/yiqiu/command_from_mq start(启动)
+    +---------------------/yiqiu/command_from_mq start（启动）
     |
-    +---------------------/yiqiu/command_from_mq relation-changed(关联上下游关系)
+    +---------------------/yiqiu/command_from_mq relation-changed（关联上下游关系）
 ```
 > unit_command 重点是给 agent 发送命令，可对多个实例进行操作
 ```
