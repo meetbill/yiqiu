@@ -251,7 +251,31 @@ resource_container: 服务下的实例
 
 > 实例的状态机
 ```
-// 待完善
++---------+  +---------+  +--------+  +---------+  +-----+  +-------+
+|  none   |—>|allocated|—>|deployed|—>|installed|—>|ready|->|running|
++---+-----+  +----+----+  +----+---+  +----+----+  +--+--+  +-------+
+    |             |            |           |          |
+    |             |            |           |          |
+    |             |            |           |          |
+    |             |            |           |          |     +-------+
+    +-------------+------------+-----------+----------+-----> error |
+                                                            +-------+
+
+
+
+(1) none --> allocated
+    申请 container, 申请 container 失败时，unit 状态为 none
+(2) allocated --> deployed:
+    拉取 program, 拉取 program 失败时，unit 状态为 allocated
+(3) deployed --> installed:
+    env-install
+    install
+    config-changed
+    start
+(4) installed --> ready
+    auth changed
+    relation change, 将数据写入 relation
+(5) ready --> running
 ```
 
 > 服务平台管理的服务
