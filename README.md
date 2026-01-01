@@ -26,8 +26,11 @@
             * [4.2.2.4 关联关系粒度](#4224-关联关系粒度)
             * [4.2.2.5 关联关系建立](#4225-关联关系建立)
             * [4.2.2.3 关联关系触发](#4223-关联关系触发)
-    * [4.3 linkage (service 内联动关系)](#43-linkage-service-内联动关系)
-    * [4.4 unit 生命周期管理](#44-unit-生命周期管理)
+        * [4.2.3 linkage (service 内联动关系)](#423-linkage-service-内联动关系)
+            * [4.2.3.1 etcd](#4231-etcd)
+        * [4.2.4 unit 生命周期管理](#424-unit-生命周期管理)
+    * [4.3 设计与折衷](#43-设计与折衷)
+    * [4.4 潜在风险](#44-潜在风险)
 * [5. 系统组件](#5-系统组件)
     * [5.1 yiqiu-agent](#51-yiqiu-agent)
     * [5.2 yiqiu-server](#52-yiqiu-server)
@@ -270,12 +273,20 @@ serviceB 需要指定是是 service 粒度还是 unit 粒度
 > * ralation-broken: 关联关系被删除，Unit 清理该关联相关的数据
 > * relation-change: 边上对端某个 unit 状态有更新（需要执行 add/update/delete）
 
-## 4.3 linkage (service 内联动关系)
+### 4.2.3 linkage (service 内联动关系)
 
 > * Redis 主从、MySQL 主从、MongoDB Replica Set
-> * ZooKeeper、Etch 的 peer 关系
+> * ZooKeeper、Etcd 的 peer 关系
 
-## 4.4 unit 生命周期管理
+#### 4.2.3.1 etcd
+
+基于动态发现启动 etcd 集群
+```
+创建 etcd 集群时使用动态发现创建，后续的节点变更常规方式替换
+```
+
+
+### 4.2.4 unit 生命周期管理
 
 **核心功能**：服务的全生命周期管理，包括部署、配置、监控等。
 
@@ -303,6 +314,10 @@ serviceB 需要指定是是 service 粒度还是 unit 粒度
 - `program`：服务镜像标准化定义
 - `relation`：服务间拓扑关系管理
 - `config`：服务配置管理
+
+## 4.3 设计与折衷
+## 4.4 潜在风险
+假设现在有两个关联的 service，各有 20 个 unit, 如果 relation 是 unit 级别，则可能会出现两 service 同时添加 unit 的并发问题，所以建议使用 service 级别 relation
 
 # 5. 系统组件
 
