@@ -227,6 +227,16 @@
 > * provider 表示关联关系信息提供者
 > * requirer 表示关联关系需求者
 
+```
+                    (依赖)
+      requirer                 provider
+    service_id(A) ---------> service_id(B)
+    interface:XX             interface:XX
+    name:Y1                  name:Y2
+    -------------------------------
+    B 服务变更时需要通知 A 服务变更
+```
+
 #### 4.2.2.3 关联关系名称
 
 service 会与其他多个 service 之间有关联关系，通过关联关系名称加以区分。
@@ -234,13 +244,13 @@ service 会与其他多个 service 之间有关联关系，通过关联关系名
 即：建立关联关系的 interface 需要一样，但是 name 可以在各组件中自定义
 ```
 +-----------+
-| twemproxy | requires (interface:memcache, name:cacheXX)
+| twemproxy | requirer (interface:memcache, name:cacheXX)
 +-----+-----+
       |
       |
       |
 +-----V-----+
-| memcache  | provides (interface:memcache, name:cache)
+| memcache  | provider (interface:memcache, name:cache)
 +-----------+
 ```
 
